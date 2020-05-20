@@ -73,6 +73,8 @@ module.exports = function () {
 
         buildResult: undefined,
 
+        startTimes: {},
+
         async reportTaskStart (/* startTime, userAgents, testCount */) {
             process.argv.forEach((val /*, index*/) => {
                 if (val.indexOf(this.targetKey) === 0)
@@ -134,6 +136,13 @@ module.exports = function () {
             this.fixture = name;
         },
 
+
+        async reportTestStart (name) {
+            if (this.disabled === true)
+                return;
+            this.startTimes[this.fixture + '-' + name] = Date.now();
+        },
+
         async reportTestDone (name, testRunInfo, meta) {
             if (this.disabled === true)
                 return;
@@ -169,15 +178,10 @@ module.exports = function () {
 
             testCase.result = result;
 
-            // durationMs
-            const durationMs = testRunInfo.durationMs;
-
-            if (durationMs !== undefined && durationMs !== null) {
-                if (durationMs > 1000)
-                    testCase['_Duration'] = Math.floor(durationMs / 1000.0) + ' seconds';
-                else
-                    testCase['_Duration'] = durationMs + ' ms';
-            }
+            // start, end
+            testCase['start'] = this.startTimes[this.fixture + '-' + name];
+            testCase['end'] = Date.now();
+            testCase['duration'] = testRunInfo.durationMs;
 
             // unstable
             const unstable = testRunInfo.unstable;
