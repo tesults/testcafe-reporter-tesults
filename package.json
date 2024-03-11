@@ -1,10 +1,10 @@
 {
   "name": "testcafe-reporter-tesults",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Tesults TestCafe reporter.",
   "author": {
     "name": "Tesults",
-    "email": "support@tesults.com",
+    "email": "help@tesults.com",
     "url": "https://tesults.com"
   },
   "main": "lib/index",
@@ -40,6 +40,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.3.4",
-    "tesults": "^1.1.0"
+    "tesults": "^1.1.3"
   }
 }
