@@ -49,23 +49,25 @@ jobs:
           npm install --prefix test/integration --no-package-lock --no-save "testcafe@${{ matrix.testcafe-version }}" "${{ runner.temp }}/testcafe-reporter-tesults-${reporter_version}.tgz"
 
       - name: Run passing and skipped TestCafe tests
+        working-directory: test/integration
         env:
           TESULTS_OUTPUT_FILE: ${{ runner.temp }}/testcafe-passing/results.json
         run: |
-          test/integration/node_modules/.bin/testcafe chrome:headless test/integration/passing.js --reporter spec,tesults --screenshots ${{ runner.temp }}/screenshots
-          node test/integration/validate-output.js "$TESULTS_OUTPUT_FILE" passing
+          node_modules/.bin/testcafe chrome:headless passing.js --reporter spec,tesults --screenshots ${{ runner.temp }}/screenshots
+          node validate-output.js "$TESULTS_OUTPUT_FILE" passing
 
       - name: Run failing TestCafe test
+        working-directory: test/integration
         env:
           TESULTS_OUTPUT_FILE: ${{ runner.temp }}/testcafe-failing/results.json
         shell: bash
         run: |
           set +e
-          test/integration/node_modules/.bin/testcafe chrome:headless test/integration/failing.js --reporter spec,tesults
+          node_modules/.bin/testcafe chrome:headless failing.js --reporter spec,tesults
           test_status=$?
           set -e
           if [[ "$test_status" -eq 0 ]]; then
             echo "Expected the TestCafe run to fail"
             exit 1
           fi
-          node test/integration/validate-output.js "$TESULTS_OUTPUT_FILE" failing
+          node validate-output.js "$TESULTS_OUTPUT_FILE" failing
