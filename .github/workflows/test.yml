@@ -20,12 +20,18 @@ jobs:
           - node-version: "20"
             testcafe-version: "1.20.1"
             testcafe-args: ""
+            passing-file: "passing-legacy.js"
+            expect-attachment: "false"
           - node-version: "20"
             testcafe-version: "3.7.6"
             testcafe-args: "--disable-native-automation"
+            passing-file: "passing.js"
+            expect-attachment: "true"
           - node-version: "24"
             testcafe-version: "3.7.6"
             testcafe-args: "--disable-native-automation"
+            passing-file: "passing.js"
+            expect-attachment: "true"
 
     steps:
       - name: Check out repository
@@ -58,8 +64,8 @@ jobs:
         env:
           TESULTS_OUTPUT_FILE: ${{ runner.temp }}/testcafe-passing/results.json
         run: |
-          node_modules/.bin/testcafe chrome:headless passing.js --reporter spec,tesults --screenshots ${{ runner.temp }}/screenshots ${{ matrix.testcafe-args }}
-          node validate-output.js "$TESULTS_OUTPUT_FILE" passing
+          node_modules/.bin/testcafe chrome:headless "${{ matrix.passing-file }}" --reporter spec,tesults --screenshots ${{ runner.temp }}/screenshots ${{ matrix.testcafe-args }}
+          node validate-output.js "$TESULTS_OUTPUT_FILE" passing "${{ matrix.expect-attachment }}"
 
       - name: Run failing TestCafe test
         working-directory: test/integration
