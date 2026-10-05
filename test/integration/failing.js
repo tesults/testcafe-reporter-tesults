@@ -1,10 +1,7 @@
 /* global fixture */
 
-const { Selector } = require('testcafe');
-
-fixture('TestCafe action reporting')
-    .page('data:text/html,<main id="status">ready</main>');
+fixture('TestCafe action reporting');
 
 test('reports an intentional failure', async t => {
-    await t.expect(Selector('#status').innerText).eql('not ready');
+    await t.expect(1).eql(2);
 });

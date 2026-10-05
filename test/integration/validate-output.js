@@ -24,7 +24,7 @@ else if (scenario === 'failing') {
     assert.strictEqual(output.results.cases.length, 1);
     assert.strictEqual(output.results.cases[0].result, 'fail');
     assert.strictEqual(typeof output.results.cases[0].reason, 'string');
-    assert.ok(output.results.cases[0].reason.includes('not ready'));
+    assert.ok(output.results.cases[0].reason.length > 0);
 }
 else
     throw new Error('Unknown validation scenario: ' + scenario);

@@ -11,6 +11,7 @@ jobs:
   test:
     name: Node.js ${{ matrix.node-version }}, TestCafe ${{ matrix.testcafe-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       fail-fast: false
@@ -18,10 +19,13 @@ jobs:
         include:
           - node-version: "20"
             testcafe-version: "1.20.1"
+            testcafe-args: ""
           - node-version: "20"
             testcafe-version: "3.7.6"
+            testcafe-args: "--disable-native-automation"
           - node-version: "24"
             testcafe-version: "3.7.6"
+            testcafe-args: "--disable-native-automation"
 
     steps:
       - name: Check out repository
@@ -50,20 +54,22 @@ jobs:
 
       - name: Run passing and skipped TestCafe tests
         working-directory: test/integration
+        timeout-minutes: 3
         env:
           TESULTS_OUTPUT_FILE: ${{ runner.temp }}/testcafe-passing/results.json
         run: |
-          node_modules/.bin/testcafe chrome:headless passing.js --reporter spec,tesults --screenshots ${{ runner.temp }}/screenshots
+          node_modules/.bin/testcafe chrome:headless passing.js --reporter spec,tesults --screenshots ${{ runner.temp }}/screenshots ${{ matrix.testcafe-args }}
           node validate-output.js "$TESULTS_OUTPUT_FILE" passing
 
       - name: Run failing TestCafe test
         working-directory: test/integration
+        timeout-minutes: 3
         env:
           TESULTS_OUTPUT_FILE: ${{ runner.temp }}/testcafe-failing/results.json
         shell: bash
         run: |
           set +e
-          node_modules/.bin/testcafe chrome:headless failing.js --reporter spec,tesults
+          node_modules/.bin/testcafe chrome:headless failing.js --reporter spec,tesults ${{ matrix.testcafe-args }}
           test_status=$?
           set -e
           if [[ "$test_status" -eq 0 ]]; then

@@ -1,12 +1,9 @@
 /* global fixture */
 
-const { Selector } = require('testcafe');
-
-fixture('TestCafe action reporting')
-    .page('data:text/html,<main id="status">ready</main>');
+fixture('TestCafe action reporting');
 
 test('reports a passing test', async t => {
-    await t.expect(Selector('#status').innerText).eql('ready');
+    await t.expect(true).ok();
     await t.takeScreenshot('passing.png');
 });
 
